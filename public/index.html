@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kitap Koleksiyonu | Premium Kütüphane Yönetimi</title>
+  <meta name="description" content="Kişisel kitap koleksiyonunuzu yönetin, okuma durumunuzu takip edin ve kütüphanenizi dijitalleştirin.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    if (!localStorage.getItem('token')) {
+      window.location.href = '/login.html';
+    }
+  </script>
+</head>
+<body>
+  <!-- Yan Menü (Sidebar) -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fa-solid fa-book-open-reader"></i>
+      <span>Koleksiyon</span>
+    </div>
+    <nav class="menu">
+      <a href="#" class="menu-item active" id="nav-all">
+        <i class="fa-solid fa-layer-group"></i> Tüm Kitaplar
+      </a>
+      <a href="#" class="menu-item" id="nav-add" onclick="uiManager.openModal('addBookModal')">
+        <i class="fa-solid fa-plus"></i> Yeni Kitap Ekle
+      </a>
+      <a href="/api-docs" class="menu-item" target="_blank">
+        <i class="fa-solid fa-file-code"></i> API Dokümantasyonu
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info" style="margin-bottom: 15px; color: #94a3b8; font-size: 0.9rem;">
+        <i class="fa-solid fa-user-circle"></i> <span id="usernameDisplay">Kullanıcı</span>
+      </div>
+      <a href="#" class="menu-item text-danger" id="logoutBtn" style="color: #ef4444; display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 10px; border-radius: 8px;">
+        <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+      </a>
+      <div class="theme-toggle" style="margin-top: 15px;">
+        <i class="fa-solid fa-moon"></i>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Ana İçerik -->
+  <main class="main-content">
+    <header class="topbar">
+      <h1>Kütüphanem</h1>
+      <div class="search-bar">
+        <i class="fa-solid fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Kitap veya yazar ara...">
+      </div>
+    </header>
+
+    <div class="content-wrapper">
+      <!-- Kitap İstatistikleri Özeti -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-book"></i></div>
+          <div class="stat-info">
+            <h3>Toplam Kitap</h3>
+            <p id="totalBooksCount">0</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon reading"><i class="fa-solid fa-glasses"></i></div>
+          <div class="stat-info">
+            <h3>Okunuyor</h3>
+            <p id="readingBooksCount">0</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon read"><i class="fa-solid fa-check-double"></i></div>
+          <div class="stat-info">
+            <h3>Okundu</h3>
+            <p id="readBooksCount">0</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kitap Listesi (Grid) -->
+      <div class="books-grid" id="booksContainer">
+        <!-- Kitap kartları buraya JS ile yüklenecek -->
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Kitaplar yükleniyor...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Yeni/Düzenle Kitap Modal -->
+  <div class="modal-overlay" id="addBookModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Yeni Kitap Ekle</h2>
+        <button class="close-btn" onclick="uiManager.closeModal('addBookModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="bookForm" novalidate>
+          <input type="hidden" id="bookId">
+          <div class="form-group">
+            <label for="title">Kitap Adı <span class="required">*</span></label>
+            <input type="text" id="title" required placeholder="Örn: 1984">
+            <div class="error-msg" id="titleError">Kitap adı zorunludur.</div>
+          </div>
+          <div class="form-group">
+            <label for="author">Yazar <span class="required">*</span></label>
+            <input type="text" id="author" required placeholder="Örn: George Orwell">
+            <div class="error-msg" id="authorError">Yazar adı zorunludur.</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group half">
+              <label for="isbn">ISBN</label>
+              <input type="text" id="isbn" placeholder="Örn: 9780451524935">
+            </div>
+            <div class="form-group half">
+              <label for="genre">Tür</label>
+              <input type="text" id="genre" placeholder="Örn: Distopya">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="reading_status">Okuma Durumu</label>
+            <div class="custom-select-wrapper">
+              <select id="reading_status">
+                <option value="Okunacak">Okunacak</option>
+                <option value="Okunuyor">Okunuyor</option>
+                <option value="Okundu">Okundu</option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-icon"></i>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="uiManager.closeModal('addBookModal')">İptal</button>
+            <button type="submit" class="btn-primary" id="saveBookBtn">Kaydet</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Silme Onay Modal -->
+  <div class="modal-overlay" id="deleteConfirmModal">
+    <div class="modal-content small-modal">
+      <div class="modal-header warning-header">
+        <div class="warning-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h2>Kitabı Sil</h2>
+      </div>
+      <div class="modal-body text-center">
+        <p>Bu kitabı koleksiyonunuzdan silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</p>
+        <input type="hidden" id="deleteBookId">
+        <div class="form-actions center-actions">
+          <button class="btn-secondary" onclick="uiManager.closeModal('deleteConfirmModal')">Vazgeç</button>
+          <button class="btn-danger" id="confirmDeleteBtn">Evet, Sil</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bildirim (Toast) -->
+  <div id="toast" class="toast">
+    <div class="toast-icon"><i class="fa-solid fa-check"></i></div>
+    <div class="toast-message">İşlem başarılı.</div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

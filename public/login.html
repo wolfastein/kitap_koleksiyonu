@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kitap Koleksiyonu - Giriş</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+  <div class="background-elements">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div class="container" id="container">
+    <!-- Kayıt Formu -->
+    <div class="form-container sign-up-container">
+      <form id="registerForm">
+        <h1>Hesap Oluştur</h1>
+        <p class="subtitle">Kitap koleksiyonunu yönetmeye başla</p>
+        <div class="input-group">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" id="reg-username" placeholder="Kullanıcı Adı" required />
+        </div>
+        <div class="input-group">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="reg-password" placeholder="Şifre" required />
+        </div>
+        <button type="submit" class="primary-btn">Kayıt Ol</button>
+      </form>
+    </div>
+
+    <!-- Giriş Formu -->
+    <div class="form-container sign-in-container">
+      <form id="loginForm">
+        <h1>Tekrar Hoş Geldin!</h1>
+        <p class="subtitle">Koleksiyonuna erişmek için giriş yap</p>
+        <div class="input-group">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" id="log-username" placeholder="Kullanıcı Adı" required />
+        </div>
+        <div class="input-group">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="log-password" placeholder="Şifre" required />
+        </div>
+        <button type="submit" class="primary-btn">Giriş Yap</button>
+      </form>
+    </div>
+
+    <!-- Overlay Container (Geçiş Efekti İçin) -->
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h2>Zaten hesabın var mı?</h2>
+          <p>Mevcut hesabınla giriş yaparak kitaplarına ulaşabilirsin.</p>
+          <button class="ghost-btn" id="signIn">Giriş Yap</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h2>Merhaba!</h2>
+          <p>Kendi dijital kütüphaneni oluşturmak için hemen ücretsiz hesap aç.</p>
+          <button class="ghost-btn" id="signUp">Kayıt Ol</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Bildirimi -->
+  <div id="toast" class="toast">
+    <div class="toast-icon">
+      <i class="fa-solid fa-check"></i>
+    </div>
+    <div class="toast-message">İşlem başarılı!</div>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
